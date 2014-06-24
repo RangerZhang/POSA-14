@@ -38,12 +38,9 @@ public class SimpleSemaphore {
         // TODO - you fill in here to initialize the SimpleSemaphore,
         // making sure to allow both fair and non-fair Semaphore
         // semantics.    	   	
-    	
-    	if(true == fair){
-    		mRL = new ReentrantLock(true);
-    	}else {
-			mRL = new ReentrantLock(false);
-		}
+    	 
+    	mRL = new ReentrantLock(fair);
+
     	mAvailable = permits;
     	mAvailableCond = mRL.newCondition(); 
     }
