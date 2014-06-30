@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
@@ -49,7 +50,7 @@ public class ThreadPoolDownloadService extends Service {
         // FixedThreadPool Executor that's configured to use
         // MAX_THREADS. Use a factory method in the Executors class.
 
-        mExecutor = null;
+        mExecutor = Executors.newFixedThreadPool(MAX_THREADS);
     }
 
     /**
@@ -93,7 +94,15 @@ public class ThreadPoolDownloadService extends Service {
         // the uri in the intent and returns the file's pathname using
         // a Messenger who's Bundle key is defined by DownloadUtils.MESSENGER_KEY.
 
-        Runnable downloadRunnable = null;
+        Runnable downloadRunnable = new Runnable() {
+			
+			@Override
+			public void run() {
+				Uri uri = intent.getData();
+		    	Messenger messenger = (Messenger)intent.getExtras().get(DownloadUtils.MESSENGER_KEY);
+		    	DownloadUtils.downloadAndRespond(ThreadPoolDownloadService.this, uri, messenger);				
+			}
+		};
 
         mExecutor.execute(downloadRunnable);
       
